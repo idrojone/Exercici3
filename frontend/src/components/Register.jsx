@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
-import { setError } from './error.jsx';
+import { useState, useEffect } from 'react';
+import { setError } from './error.jsx'
 
-function LogIn() {
-
+function Register() {
     const [email, setEmail] = useState(''); 
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
     const [errorMail, setErrorMail] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
+    const [errorName, setErrorName] = useState('');
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;   
 
-     /**
+    /**
      * Desactiva el scroll de la página cuando el componente se monta y lo reactiva al desmontarse.
      */
     useEffect(() => {
@@ -27,22 +28,28 @@ function LogIn() {
         let valid = true;
         setErrorMail('');
         setErrorPassword('');
-        
+        setErrorName('');
+
         if (!regexEmail.test(email)) {
             setErrorMail('Por favor, ingresa un correo electrónico válido.');
             valid = false;
         }
-        
+
         if (email.length === 0) {
             setErrorMail('Por favor, ingresa un correo electrónico.');
             valid = false;
         }
-        
+
+        if (name.length === 0) {
+            setErrorName('Por favor, ingresa un nombre de usuario.');
+            valid = false;
+        }
+
         if (password.length < 6) {
             setErrorPassword('La contraseña debe tener al menos 6 caracteres.');
             valid = false;
         }
-        
+
         if (password.length === 0) {
             setErrorPassword('Por favor, ingresa una contraseña.');
             valid = false;
@@ -52,17 +59,17 @@ function LogIn() {
     }
 
     const handleSubmit = () => {
-        
+
         if (!handleErrors()) return;
 
         const fetchData = async () => {
             try {
-                const response = await fetch(import.meta.env.VITE_API_URL + '/auth/login', {
+                const response = await fetch(import.meta.env.VITE_API_URL + '/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ email, password }),
+                    body: JSON.stringify({ email, password, name }),
                 });
 
                 if (!response.ok) {
@@ -75,7 +82,7 @@ function LogIn() {
                 const data = await response.json();
                 console.log(data);
             } catch (error) {
-                setError(error.message);
+                console.error(error);
             }
         };
 
@@ -86,7 +93,7 @@ function LogIn() {
        <div className="flex flex-col justify-start bg-green-100 px-4 sm:px-6 lg:px-8 items-start pt-6" style={{ minHeight: 'calc(100vh - 9rem)' }}>
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <img src="../src/assets/whatsapp.png" alt="Your Company" className="mx-auto h-24 w-auto" />
-                <h2 className="mt-4 text-center text-2xl leading-9 font-bold tracking-tight text-black">Inicia Sessión con tu cuenta</h2>
+                <h2 className="mt-4 text-center text-2xl leading-9 font-bold tracking-tight text-black">Registrate con tu correo</h2>
             </div>  
 
             <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm ">
@@ -100,11 +107,16 @@ function LogIn() {
                     </div>
 
                     <div>
-                        <div className="flex items-center justify-between">
-                        <label htmlFor="password" className="block text-sm/6 font-medium text-black-100">Contraseña</label>
-                        <div className="text-sm">
-                            <a href="#" className="font-semibold text-green-400 hover:text-green-300">¿Olvidaste tu contraseña?</a>
+                        <label htmlFor="username" className="block text-sm/6 font-medium text-black-100">Nombre de Usuario</label>
+                        <div className="mt-2">
+                        <input id="username" type="text" name="username" required autoComplete="username" value={name} onChange={(e) => setName(e.target.value)} className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-black/10 placeholder:text-black-500 focus:outline-2 focus:-outline-offset-2 focus:outline-green-500 sm:text-sm/6" />
                         </div>
+                        <span className='text-sm/4 font-small text-red-500'>{errorName}</span>
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="password" className="block text-sm/6 font-medium text-black-100">Contraseña</label>
                         </div>
                         <div className="mt-2">
                         <input id="password" type="password" name="password" required value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-black/10 placeholder:text-black-500 focus:outline-2 focus:-outline-offset-2 focus:outline-green-500 sm:text-sm/6" />
@@ -113,13 +125,11 @@ function LogIn() {
                     </div>
 
                     <div>
-                        <button type="submit"  onClick={(e) => { e.preventDefault(); handleSubmit(); }} className="flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-green-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500">Iniciar Sesión</button>
+                        <button type="submit"  onClick={(e) => { e.preventDefault(); handleSubmit(); }} className="flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-green-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-500">Registrarse</button>
                     </div>
                 </form>
             </div>
         </div>
-        
-    );
+    )
 }
-
-export default LogIn;
+export default Register;
