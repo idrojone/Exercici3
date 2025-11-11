@@ -15,7 +15,7 @@ export async function register(req: Request, res: Response) {
     const user = await UserModel.create({ name, email, passwordHash: hash });
 
     const token = signToken({ id: user._id, email: user.email });
-    return res.status(201).json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    return res.status(201).json({ token, user: { name: user.name, email: user.email } });
   } catch (err) {
     console.error('register error', err);
     return res.status(500).json({ message: 'Error interno del servidor' });
@@ -34,7 +34,7 @@ export async function login(req: Request, res: Response) {
     if (!ok) return res.status(400).json({ message: 'Credenciales inválidas' });
 
     const token = signToken({ id: user._id, email: user.email });
-    return res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    return res.json({ token, user: { name: user.name, email: user.email } });
   } catch (err) {
     console.error('login error', err);
     return res.status(500).json({ message: 'Error interno del servidor' });

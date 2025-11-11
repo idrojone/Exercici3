@@ -1,5 +1,9 @@
-import { useState, useEffect } from 'react';
-import { setError } from './error.jsx'
+import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import { setError } from './error';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 function Register() {
     const [email, setEmail] = useState(''); 
@@ -9,6 +13,8 @@ function Register() {
     const [errorPassword, setErrorPassword] = useState('');
     const [errorName, setErrorName] = useState('');
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;   
+    const { register } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     /**
      * Desactiva el scroll de la página cuando el componente se monta y lo reactiva al desmontarse.
@@ -58,35 +64,21 @@ function Register() {
         return valid;
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
 
         if (!handleErrors()) return;
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(import.meta.env.VITE_API_URL + '/auth/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password, name }),
-                });
-
-                if (!response.ok) {
-                    const errorBody = await response.json();   
-                    const errorMessage = errorBody.message || 'Error al iniciar sesión.';
-                    setError(errorMessage);
-                    return;
-                }
-
-                const data = await response.json();
-                console.log(data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchData();
+        try {
+            const data = await register({ name, email, password });
+            Swal.fire({
+                icon: 'success',
+                title: 'Exitoso',
+                text: 'Registro exitoso',
+            });
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+            setError(error.message || 'Error en el registro');
+        }
     }
 
     return (

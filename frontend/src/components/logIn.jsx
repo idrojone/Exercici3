@@ -1,5 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { setError } from './error.jsx';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 function LogIn() {
 
@@ -8,6 +12,8 @@ function LogIn() {
     const [errorMail, setErrorMail] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;   
+    const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
 
      /**
      * Desactiva el scroll de la página cuando el componente se monta y lo reactiva al desmontarse.
@@ -51,35 +57,19 @@ function LogIn() {
         return valid;
     }
 
-    const handleSubmit = () => {
-        
+    const handleSubmit = async () => {
         if (!handleErrors()) return;
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch(import.meta.env.VITE_API_URL + '/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-
-                if (!response.ok) {
-                    const errorBody = await response.json();   
-                    const errorMessage = errorBody.message || 'Error al iniciar sesión.';
-                    setError(errorMessage);
-                    return;
-                }
-
-                const data = await response.json();
-                console.log(data);
-            } catch (error) {
-                setError(error.message);
-            }
-        };
-
-        fetchData();
+        try {
+            const data = await login({ email, password });
+            Swal.fire({
+                icon: 'success',
+                title: 'Exitoso',
+                text: 'Inicio de sesión exitoso',
+            });
+            navigate('/');
+        } catch (err) {
+            setError(err.message || 'Error al iniciar sesión');
+        }
     }
 
     return (

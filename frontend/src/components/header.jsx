@@ -1,6 +1,12 @@
+import { useContext } from 'react';
 import { Link } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext';
 
 function Header() {
+
+    const { user, logout } = useContext(AuthContext)
+    console.log(user);
+
     return (
         <header className="bg-green-500 text-white font-bold">
             <div className="p-4 relative">
@@ -10,9 +16,21 @@ function Header() {
             <nav>
                 <ul className="flex justify-center gap-8 p-4 bg-green-500 text-white font-bold">
                     <li><Link to="/">Inicio</Link></li>
-                    <li><Link to="/login">Iniciar Sessión</Link></li>
-                    <li><Link to="/register">Registrarse</Link></li>
                     <li><Link to="/chat">Chat</Link></li>
+                    { !user && (
+                        <>
+                            <li><Link to="/login">Iniciar Sesión</Link></li>
+                            <li><Link to="/register">Registrarse</Link></li>
+                        </>)
+                    }
+                    { user && (
+                        <>
+                            <li><Link to="/profile">Perfil</Link></li>
+                            <li><button onClick={logout}>Cerrar Sesión</button></li>
+                        </>
+                    )
+
+                    }
                 </ul>
             </nav>
         </header>

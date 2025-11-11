@@ -9,7 +9,7 @@ export function createApp() {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/', (_req, res) => res.json({ ok: true }));
+  // app.get('/', (_req, res) => res.json({ ok: true }));
 
   app.use('/api/auth', authRoutes);
 
