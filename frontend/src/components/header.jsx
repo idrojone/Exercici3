@@ -25,7 +25,7 @@ function Header() {
                     }
                     { user && (
                         <>
-                            <li><Link to="/profile">Perfil</Link></li>
+                            <li>Bienvenido {user.name}</li>
                             <li><button onClick={logout}>Cerrar Sesión</button></li>
                         </>
                     )

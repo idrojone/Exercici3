@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import authRoutes from '../routes/auth.routes';
+import messageRoutes from '../routes/message.routes';
 
 export function createApp() {
   const app = express();
@@ -12,6 +13,7 @@ export function createApp() {
   // app.get('/', (_req, res) => res.json({ ok: true }));
 
   app.use('/api/auth', authRoutes);
+  app.use('/api/messages', messageRoutes);
 
   return app;
 }

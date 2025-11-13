@@ -17,7 +17,7 @@ async function start() {
         cors: {
             origin: CLIENT_ORIGIN,
             methods: ['GET', 'POST'],
-            credentials: true,
+            // credentials: true,
         },
     });
 

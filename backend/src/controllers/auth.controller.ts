@@ -41,4 +41,14 @@ export async function login(req: Request, res: Response) {
   }
 }
 
-export default { register, login };
+export async function getUsers(req: Request, res: Response) {
+  try {
+    const users = await UserModel.find().select('name email').lean();
+    return res.json({ users });
+  } catch (err) {
+    console.error('getUsers error', err);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+}
+
+export default { register, login, getUsers };

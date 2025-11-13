@@ -26,8 +26,11 @@ export function AuthProvider({ children }) {
         });
 
         if (!res.ok) {
-            setError(res.message || 'Error al iniciar sesión.');
-            return;
+            let errBody = {};
+            try { errBody = await res.json(); } catch (e) {}
+            const msg = errBody?.message || 'Error al iniciar sesión.';
+            setError(msg);
+            throw new Error(msg);
         }
 
         const data = await res.json();
@@ -45,16 +48,18 @@ export function AuthProvider({ children }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
         });
-
         if (!res.ok) {
-            setError(res.message || 'Error al registrar el usuario.');
-            return;
+            let errBody = {};
+            try { errBody = await res.json(); } catch (e) {}
+            const msg = errBody?.message || 'Error al registrar el usuario.';
+            setError(msg);
+            throw new Error(msg);
         }
         const data = await res.json();
         setToken(data.token);
         setUser(data.user);
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', data.user)
+        localStorage.setItem('user', JSON.stringify(data.user));
         return data;
     }, []);
 
