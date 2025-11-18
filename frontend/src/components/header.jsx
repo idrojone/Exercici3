@@ -5,7 +5,6 @@ import { AuthContext } from '../context/AuthContext';
 function Header() {
 
     const { user, logout } = useContext(AuthContext)
-    // console.log(user);
 
     return (
         <header className="bg-green-500 text-white font-bold">

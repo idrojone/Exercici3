@@ -5,7 +5,7 @@ import { useSocket } from "../context/SocketContext";
 function Users() {
 
     const [users, setUsers] = useState([]);
-    const { token, logout, login } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
     const { socket, presence } = useSocket();
 
     useEffect(() => {
@@ -32,7 +32,7 @@ function Users() {
             }
         };
         fetchUsers();
-    }, [token, logout, login]);
+    }, [token]);
 
     useEffect(() => {
         if (!presence || Object.keys(presence).length === 0) return;

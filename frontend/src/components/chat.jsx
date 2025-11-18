@@ -7,7 +7,6 @@ import MessageInput from '../components/messageInput';
 import Users from '../components/users';
 
 function Chat () {
-    const location = useLocation();
     const conversationId = 'global';
 
     const { token, user } = useContext(AuthContext);

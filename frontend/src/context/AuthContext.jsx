@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { setError } from '../components/error';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -71,8 +71,6 @@ export function AuthProvider({ children }) {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
-        }).then(() => {
-            console.log('Logout request sent');
         }).catch((err) => {
             console.error('Error during logout:', err);
         });
@@ -86,6 +84,11 @@ export function AuthProvider({ children }) {
             icon: 'success',
             title: 'Exitoso',
             text: 'Logout exitoso',
+            confirmButtonText: 'OK',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/';
+            }
         });
     }, []);
 
