@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { setError } from '../components/error.jsx';
+import { setError } from './error.jsx';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';

@@ -7,6 +7,8 @@ const SocketContext = createContext(null);
 export function SocketProvider({ children }) {
     const { token, logout } = useContext(AuthContext);
     const [socket, setSocket] = useState(null);
+    // presence map: userId -> boolean
+    const [presence, setPresence] = useState({});
 
     useEffect(() => {
         if (!token) return;
@@ -29,6 +31,19 @@ export function SocketProvider({ children }) {
         };
 
         s.on('connect', onConnect);
+        // presence updates
+        const onPresence = (payload) => {
+            setPresence(prev => ({ ...prev, [payload.userId]: payload.online }));
+        }
+        s.on('presence:update', onPresence);
+        const onUserCreated = ({ user }) => {
+            window.dispatchEvent(new CustomEvent('user:created', { detail: user }));
+        }
+        s.on('user:created', onUserCreated);
+        const onUserUpdated = ({ user }) => {
+            window.dispatchEvent(new CustomEvent('user:updated', { detail: user }));
+        }
+        s.on('user:updated', onUserUpdated);
         s.on('disconnect', onDisconnect);
         s.on('connect_error', onConnectError);
 
@@ -37,6 +52,9 @@ export function SocketProvider({ children }) {
         setSocket(s);
         return () => {
             s.off('connect', onConnect);
+            s.off('presence:update', onPresence);
+            s.off('user:created', onUserCreated);
+            s.off('user:updated', onUserUpdated);
             s.off('disconnect', onDisconnect);
             s.off('connect_error', onConnectError);
             try { s.close(); } catch (e) {}
@@ -64,7 +82,7 @@ export function SocketProvider({ children }) {
         socket.emit('leave', conversationId);
     }, [socket]);
 
-    const value = useMemo(() => ({ socket, joinConversation, sendMessage, setTyping, leaveConversation }), [socket]);
+    const value = useMemo(() => ({ socket, presence, joinConversation, sendMessage, setTyping, leaveConversation }), [socket, presence]);
 
     return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
 }

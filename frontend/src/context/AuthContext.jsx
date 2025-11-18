@@ -64,16 +64,31 @@ export function AuthProvider({ children }) {
     }, []);
 
     const logout = useCallback(() => {
+        
+        console.log('Logging out user');
+        fetch(import.meta.env.VITE_API_URL + '/auth/logout', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        }).then(() => {
+            console.log('Logout request sent');
+        }).catch((err) => {
+            console.error('Error during logout:', err);
+        });
+
         setToken(null);
         setUser(null);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+
         Swal.fire({
             icon: 'success',
             title: 'Exitoso',
             text: 'Logout exitoso',
         });
     }, []);
+
 
     const value = useMemo(() => ({ user, token, loading, login, logout, register }), [user, token, loading, login, logout, register]);
 

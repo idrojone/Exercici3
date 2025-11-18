@@ -1,28 +1,28 @@
 import { Server, Socket } from "socket.io";
 import { Message } from "../models/Message";
 
-
-type OnlineMap = Map<string, Set<string>>; // userId -> set(socketId)
+type OnlineMap = Map<string, Set<string>>;
 
 export default function registerChatHandlers(io: Server) {
     const online: OnlineMap = new Map();
 
-    io.on("connection", (socket: Socket) => {
+    io.on("connection", async (socket: Socket) => {
         const user = socket.data.user;
         if (!user || !user.id) {
             socket.disconnect();
             return;
         }
-       
+        
         const userId: string = user.id;
 
-        // añadir socket al mapa de presencia
         if (!online.has(userId)) online.set(userId, new Set());
-        online.get(userId)!.add(socket.id);
+        const set = online.get(userId)!;
+        set.add(socket.id);
 
-        // opcional: emitir presencia a contactos
+        if (set.size === 1) {
+            io.emit('presence:update', { userId, online: true });
+        }
         socket.join(`user:${userId}`);
-        // unir a la sala global para chat público
         socket.join(`conversation:global`);
 
         socket.on("join", (conversationId: string, cb?: (res: any) => void) => {
@@ -124,8 +124,9 @@ export default function registerChatHandlers(io: Server) {
             }
         });
 
-        socket.on("disconnect", () => {
+        socket.on("disconnect", async () => {
             const set = online.get(userId);
+            
             if (set) {
                 set.delete(socket.id);
                 if (set.size === 0) {

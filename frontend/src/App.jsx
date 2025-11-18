@@ -1,10 +1,10 @@
 import './App.css'
 import Header from './components/header.jsx'
-import Home from './pages/home.jsx'
-import LogIn from './pages/logIn.jsx'
+import Home from './components/home.jsx'
+import LogIn from './components/logIn.jsx'
 import { Routes, Route } from 'react-router'
-import Register from './pages/register.jsx'
-import Chat from './pages/chat.jsx'
+import Register from './components/register.jsx'
+import Chat from './components/chat.jsx'
 
 function App() {
 

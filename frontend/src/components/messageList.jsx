@@ -1,11 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-function MessageList({ messages = [], currentUserId, currentUserName }) {
+function MessageList({ messages = [], currentUserName }) {
   const containerRef = useRef(null);
   const lastMessageRef = useRef(null);
 
   useEffect(() => {
-    // scroll to bottom when messages change
     try {
       if (lastMessageRef.current) {
         lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -13,12 +12,11 @@ function MessageList({ messages = [], currentUserId, currentUserName }) {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
       }
     } catch (e) {
-      // ignore
     }
   }, [messages]);
 
   return (
-    console.log('Rendering MessageList', messages),
+    // console.log(messages),
     <div ref={containerRef} className="w-full h-full">
       <div className="flex flex-col gap-3">
         {messages.map((m, idx) => {

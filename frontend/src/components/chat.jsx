@@ -4,11 +4,11 @@ import { AuthContext } from "../context/AuthContext";
 import { useLocation } from 'react-router-dom';
 import MessageList from '../components/messageList';
 import MessageInput from '../components/messageInput';
+import Users from '../components/users';
 
-function Chat (props) {
+function Chat () {
     const location = useLocation();
-    const state = location.state || {};
-    const conversationId = props.conversationId || state.conversationId || new URLSearchParams(location.search).get('conversationId') || 'global';
+    const conversationId = 'global';
 
     const { token, user } = useContext(AuthContext);
     const { socket, joinConversation, leaveConversation, sendMessage, setTyping } = useSocket();
@@ -38,7 +38,6 @@ function Chat (props) {
 
     useEffect(() => {
         if (!socket) return;
-        // join the conversation room (global or named)
         try { joinConversation?.(conversationId); } catch (e) {}
 
         const onReceive = (msg) => {
@@ -79,10 +78,9 @@ function Chat (props) {
 
     return (
         <div className="h-187.5 flex flex-col md:flex-row bg-green-100">
-            {/* <aside className="md:w-64 w-full bg-white md:border-r md:border-gray-200 p-4 overflow-auto">
-                <h2 className="text-lg font-semibold mb-3">Usuarios</h2>
-                <UserList />
-            </aside> */}
+            <aside className="md:w-64 w-full bg-white md:border-r md:border-gray-200 p-4 overflow-auto">
+                <Users />
+            </aside>
 
             <main className="flex-1 flex flex-col">
                 <div className="flex-1 overflow-auto p-4">

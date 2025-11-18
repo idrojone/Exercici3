@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { setError } from '../components/error';
+import { setError } from './error';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
